@@ -240,11 +240,13 @@ def read_image(image):
             "Unsupported image type. Supported types: numpy array, file path")
 
 
-def receptive_field_visualization_2d(receptive_field_dict, image, save_name="receptive_field_visualization_2d"):
+def receptive_field_visualization_2d(receptive_field_dict, image, save_name="receptive_field_visualization_2d", only_last_layer=False):
     if not cv2_available:
         raise ValueError(f"Visualization requires the cv2 module.")
 
     ordered_key_list = list(receptive_field_dict.keys())[:-1]
+    if only_last_layer:
+        ordered_key_list = ordered_key_list[-1:]
     image_size = receptive_field_dict["input_size"][1]
     image = read_image(image)
     image = cv2.resize(image, (image_size, image_size))

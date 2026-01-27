@@ -45,6 +45,8 @@ def receptive_field(model, input_size, batch_size=-1, device="cuda"):
             p_key = "%i" % (module_idx - 1)
             receptive_field[m_key] = OrderedDict()
 
+            receptive_field[m_key]["module"] = class_name
+
             if not receptive_field["0"]["conv_stage"]:
                 print("Enter in deconv_stage")
                 receptive_field[m_key]["j"] = 0
@@ -147,8 +149,8 @@ def receptive_field(model, input_size, batch_size=-1, device="cuda"):
         h.remove()
 
     print("------------------------------------------------------------------------------")
-    line_new = "{:>20}  {:>10} {:>10} {:>10} {:>15} ".format(
-        "Layer (type)", "map size", "start", "jump", "receptive_field")
+    line_new = "{:>20}  {:>10} {:>10} {:>10} {:>15} {:>10}".format(
+        "Layer (type)", "map size", "start", "jump", "receptive_field", "module")
     print(line_new)
     print("==============================================================================")
     for layer in receptive_field:
@@ -156,13 +158,14 @@ def receptive_field(model, input_size, batch_size=-1, device="cuda"):
         assert "start" in receptive_field[layer], layer
         assert len(receptive_field[layer]["output_shape"]) == 4 or len(
             receptive_field[layer]["output_shape"]) == 5
-        line_new = "{:7} {:12}  {:>10} {:>10} {:>10} {:>15} ".format(
+        line_new = "{:7} {:12}  {:>10} {:>10} {:>10} {:>15} {:>10}".format(
             "",
             layer,
             str(receptive_field[layer]["output_shape"][2:]),
             str(receptive_field[layer]["start"]),
             str(receptive_field[layer]["j"]),
-            format(str(receptive_field[layer]["r"]))
+            format(str(receptive_field[layer]["r"])),
+            str(receptive_field[layer].get("module", "-"))
         )
         print(line_new)
 
